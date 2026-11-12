@@ -20,7 +20,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Upstream uses a long-lived `staging` branch plus a deploy key. This fork
+  # has neither, and checkout of a missing `staging` ref failed every run.
+  detect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      present: ${{ steps.staging.outputs.present }}
+    steps:
+      - name: Look for a staging branch
+        id: staging
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/${{ github.repository }}/branches/staging" >/dev/null 2>&1; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "staging branch exists"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "This fork has no staging branch, so there is nothing to merge."
+          fi
+
   resolve:
+    needs: detect
+    if: needs.detect.outputs.present == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:

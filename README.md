@@ -132,6 +132,10 @@
 
 To have the project up and running, please follow the [Quick Start Guide](https://docs.postiz.com/quickstart)
 
+## Self-host this fork on a Windows PC
+
+`docker-compose.yaml` in this repository builds Postiz from this fork and runs it at http://localhost:4007 with Postgres, Redis, and Temporal. Stripe is left empty, so the hosted-plan limits stay off. The steps, the example env file, and how to create the first admin are in [SELF-HOST-WINDOWS.md](SELF-HOST-WINDOWS.md).
+
 ## Sponsor Postiz
 
 We now offer a few options to sponsor Postiz:
